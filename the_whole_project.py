@@ -26,8 +26,12 @@ img_height, img_width = 150, 150
 # the data, shuffled and split between train and test sets
 # (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
+#Windows
 train_data_dir = "dataset5\\A"
 validation_data_dir = "dataset5\\A"
+#Linux
+train_data_dir = 'dataset5/A'
+validation_data_dir = "dataset5/A"
 #
 # if K.image_data_format() == 'channels_first':
 #     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
@@ -82,6 +86,8 @@ model.fit_generator(
     epochs=epochs,				            # For Keras 2.0 API change to epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples//batch_size)
+
+model.save('ASL_Classifier.h5')
 
 # x_train = x_train.astype('float32')
 # x_test = x_test.astype('float32')
