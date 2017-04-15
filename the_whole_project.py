@@ -29,6 +29,7 @@ img_height, img_width = 150, 150
 #Windows
 train_data_dir = "dataset5\\A"
 validation_data_dir = "dataset5\\A"
+
 #Linux
 train_data_dir = 'dataset5/A'
 validation_data_dir = "dataset5/A"
@@ -41,6 +42,8 @@ validation_data_dir = "dataset5/A"
 #     x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
 #     x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
 #     input_shape = (img_rows, img_cols, 1)
+
+
 
 input_shape = (img_height, img_width, 3)
 
@@ -87,8 +90,6 @@ model.fit_generator(
     validation_data=validation_generator,
     validation_steps=nb_validation_samples//batch_size)
 
-model.save('ASL_Classifier.h5')
-
 # x_train = x_train.astype('float32')
 # x_test = x_test.astype('float32')
 # x_train /= 255
@@ -115,3 +116,6 @@ model.save('ASL_Classifier.h5')
 # score = model.evaluate(x_test, y_test, verbose=0)
 # print('Test loss:', score[0])
 # print('Test accuracy:', score[1])
+
+model.save('letter_classifier.h5')
+
