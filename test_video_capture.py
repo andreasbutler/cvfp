@@ -17,7 +17,7 @@ else:
 
 currletter = -1
 
-model = load_model('ASL_Classifier.h5')
+model = load_model('letter_classifier.h5')
 
 #model.summary()
 

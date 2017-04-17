@@ -12,6 +12,7 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 from keras.preprocessing.image import ImageDataGenerator
+import os
 
 batch_size = 16
 num_classes = 24
@@ -27,12 +28,12 @@ img_height, img_width = 150, 150
 # (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 #Windows
-train_data_dir = "dataset5\\A"
-validation_data_dir = "dataset5\\A"
+train_data_dir = os.path.join("dataset5","A")
+validation_data_dir = os.path.join("dataset5","A_validate")
 
 #Linux
-train_data_dir = 'dataset5/A'
-validation_data_dir = "dataset5/A"
+# train_data_dir = 'dataset5/A'
+# validation_data_dir = "dataset5/A"
 #
 # if K.image_data_format() == 'channels_first':
 #     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
@@ -51,8 +52,9 @@ model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
                  input_shape=input_shape))
-#model.add(Conv2D(64, (3, 3), activation='relu'))
+#
 model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(Dropout(0.25))
 model.add(Flatten())
 #model.add(Dense(128, activation='relu'))
