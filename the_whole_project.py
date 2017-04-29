@@ -15,11 +15,11 @@ from keras.preprocessing.image import ImageDataGenerator
 import os
 
 batch_size = 16
-num_classes = 24
+num_classes = 31#23#24
 epochs = 12
 
-nb_train_samples = 500
-nb_validation_samples = 100
+nb_train_samples = 1500
+nb_validation_samples = 300
 
 # input image dimensions
 img_height, img_width = 150, 150
@@ -28,8 +28,10 @@ img_height, img_width = 150, 150
 # (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 #Windows
-train_data_dir = os.path.join("dataset5","A")
-validation_data_dir = os.path.join("dataset5","A_validate")
+# train_data_dir = os.path.join("dataset5","A")
+# validation_data_dir = os.path.join("dataset5","A_validate")
+train_data_dir = os.path.join(os.path.join("CNN_input","depth_data"), os.path.join("train"))
+validation_data_dir = os.path.join(os.path.join("CNN_input","depth_data"), os.path.join("test"))
 
 #Linux
 # train_data_dir = 'dataset5/A'
@@ -77,13 +79,13 @@ train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
-    class_mode='binary')
+    class_mode='sparse')
 
 validation_generator = test_datagen.flow_from_directory(
     validation_data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
-    class_mode='binary')
+    class_mode='sparse')
 
 model.fit_generator(
     generator = train_generator,
