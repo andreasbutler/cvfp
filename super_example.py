@@ -9,6 +9,10 @@ import pygame
 import sys
 import numpy as np
 
+#from keras.models import load_model
+import scipy.ndimage, scipy.misc
+import skimage.color
+
 
 cv2.namedWindow("preview")
 
@@ -26,6 +30,12 @@ SKELETON_COLORS = [pygame.color.THECOLORS["red"],
                     pygame.color.THECOLORS["yellow"],
                     pygame.color.THECOLORS["violet"]]
 
+#model = load_model('letter_classifier.h5')
+#letters = 'abcdefghiklmnopqrstuvwxy0123456789'
+#model.summary()
+
+#print(len(letters))
+currletter = -1
 
 class InfraRedRuntime(object):
     def __init__(self):
@@ -53,7 +63,7 @@ class InfraRedRuntime(object):
         self._screen = pygame.display.set_mode((self._kinect.depth_frame_desc.Width, self._kinect.depth_frame_desc.Height),
                                                 pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE, 32)
 
-        pygame.display.set_caption("Kinect for Windows v2 Infrared")
+        pygame.display.set_caption("Kinect for Windows v2 Depth")
 
 
 
@@ -62,13 +72,40 @@ class InfraRedRuntime(object):
             return
         frame2 = np.array(frame)
         frame2 = frame2.reshape((self._kinect.depth_frame_desc.Height, self._kinect.depth_frame_desc.Width))
+        frame2[frame2 == 0] = np.amax(frame2) #Ignore points where depth sensor screwed up
+        frame2[frame2 > 1.5 * np.amin(frame2)] = np.amax(frame2)
         frame2 = frame2/(np.amax(frame2))
-        print(frame2.shape)
-        print(frame2)
+        frame2[frame2 == 1] = 0
+        print(np.amax(frame2), np.amin(frame2))
+        #print(frame2.shape)
+        #print(frame2)
         target_surface.lock()
         f8=np.uint8(frame.clip(1,4000)/16.)
         frame8bit=np.dstack((f8,f8,f8))
-        cv2.imshow("preview", frame2)
+
+        #Try taking the central 256x256 pixels instead of resizing
+        halfw, halfh = 128, 128
+        xb1, xb2 = frame2.shape[0] / 2 - halfw, frame2.shape[0] / 2 + halfw
+        yb1, yb2 = frame2.shape[1] / 2 - halfh, frame2.shape[1] / 2 + halfh
+
+        center = frame2[xb1:xb2, yb1:yb2]
+
+        colorframe = skimage.color.gray2rgb(center)
+        resized = scipy.misc.imresize(colorframe, (256, 256, 3))
+
+        cv2.imshow("preview", resized)
+
+        #resized = np.expand_dims(resized, axis=0)
+        '''
+        vec = model.predict(resized)
+        val = np.argmax(vec)
+        global currletter
+        if val != currletter:
+            print(letters[val], val, vec)
+            currletter = val
+'''
+
+
         address = self._kinect.surface_as_array(target_surface.get_buffer())
         ctypes.memmove(address, frame8bit.ctypes.data, frame8bit.size)
         del address

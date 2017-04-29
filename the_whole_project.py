@@ -22,7 +22,7 @@ nb_train_samples = 1500
 nb_validation_samples = 300
 
 # input image dimensions
-img_height, img_width = 150, 150
+img_height, img_width = 256, 256
 
 # the data, shuffled and split between train and test sets
 # (x_train, y_train), (x_test, y_test) = mnist.load_data()
