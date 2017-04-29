@@ -52,9 +52,6 @@ while True:
     img1 = cv2.convertScaleAbs(img1)
     img2 = cv2.convertScaleAbs(img2)
 
-    img1 = cv2.imread('Yeuna9x.png',0)
-    img2 = cv2.imread('SuXT483.png',0)
-
     # print(img1.dtype)
     stereo = cv2.StereoBM_create(numDisparities=16, blockSize=15)
     disparity = stereo.compute(img2,img1)
