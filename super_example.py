@@ -9,7 +9,9 @@ import pygame
 import sys
 import numpy as np
 
-#from keras.models import load_model
+import nlpPredictor
+
+from keras.models import load_model
 import scipy.ndimage, scipy.misc
 import skimage.color
 
@@ -30,12 +32,15 @@ SKELETON_COLORS = [pygame.color.THECOLORS["red"],
                     pygame.color.THECOLORS["yellow"],
                     pygame.color.THECOLORS["violet"]]
 
-#model = load_model('letter_classifier.h5')
-#letters = 'abcdefghiklmnopqrstuvwxy0123456789'
+model = load_model('letter_classifier.h5')
+letters = 'abcdefghiklmnopqrstuvwxy0123456789'
 #model.summary()
+
+nlp = nlpPredictor()
 
 #print(len(letters))
 currletter = -1
+prevletters = ''
 
 class InfraRedRuntime(object):
     def __init__(self):
@@ -76,7 +81,7 @@ class InfraRedRuntime(object):
         frame2[frame2 > 1.5 * np.amin(frame2)] = np.amax(frame2)
         frame2 = frame2/(np.amax(frame2))
         frame2[frame2 == 1] = 0
-        print(np.amax(frame2), np.amin(frame2))
+        #print(np.amax(frame2), np.amin(frame2))
         #print(frame2.shape)
         #print(frame2)
         target_surface.lock()
@@ -95,15 +100,20 @@ class InfraRedRuntime(object):
 
         cv2.imshow("preview", resized)
 
-        #resized = np.expand_dims(resized, axis=0)
-        '''
+        resized = np.expand_dims(resized, axis=0)
+
         vec = model.predict(resized)
+        #TODO integrate nlp
+        #Basically need to call nlp.predict(letters)
+        #Calling on the previous two letters
+        #Then need to call numpy.product to elementwise multiply the two vectors, after vec is of length 24
+        #Then call val = argmax
         val = np.argmax(vec)
         global currletter
         if val != currletter:
             print(letters[val], val, vec)
             currletter = val
-'''
+
 
 
         address = self._kinect.surface_as_array(target_surface.get_buffer())
