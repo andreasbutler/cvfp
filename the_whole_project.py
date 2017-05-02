@@ -15,7 +15,8 @@ from keras.preprocessing.image import ImageDataGenerator
 import os
 
 batch_size = 16
-num_classes = 31#23#24
+#num_classes = 31#23#24
+num_classes=24
 epochs = 12
 
 nb_train_samples = 1500
