@@ -9,7 +9,7 @@ import pygame
 import sys
 import numpy as np
 
-import nlpPredictor
+from nlpPredictor import nlpPredictor
 
 from keras.models import load_model
 import scipy.ndimage, scipy.misc
@@ -95,6 +95,8 @@ class InfraRedRuntime(object):
 
         center = frame2[xb1:xb2, yb1:yb2]
 
+        center = center / 255.
+
         colorframe = skimage.color.gray2rgb(center)
         resized = scipy.misc.imresize(colorframe, (256, 256, 3))
 
@@ -108,11 +110,20 @@ class InfraRedRuntime(object):
         #Calling on the previous two letters
         #Then need to call numpy.product to elementwise multiply the two vectors, after vec is of length 24
         #Then call val = argmax
-        val = np.argmax(vec)
+        global prevletters
+        nlpvec = nlp.predict(prevletters)
+        if nlpvec == []:
+            val = np.argmax(vec)
+        else:
+            totvec = np.multiply(nlpvec, vec)
+            val = np.argmax(vec)
         global currletter
         if val != currletter:
             print(letters[val], val, vec)
             currletter = val
+            prevletters = prevletters + letters[val]
+            prevletters = prevletters[1:]
+
 
 
 
