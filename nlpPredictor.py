@@ -4,6 +4,7 @@ class nlpPredictor:
     def __init__(self):
         with open("nlpDictionary.txt") as infile:
             self.frequencies = json.load(infile)
+        print(self.frequencies)
 
     def predict(self, letters):
         letters = letters.lower()

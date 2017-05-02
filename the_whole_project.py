@@ -34,21 +34,6 @@ img_height, img_width = 256, 256
 train_data_dir = os.path.join(os.path.join("CNN_input","depth_data"), os.path.join("train"))
 validation_data_dir = os.path.join(os.path.join("CNN_input","depth_data"), os.path.join("test"))
 
-#Linux
-# train_data_dir = 'dataset5/A'
-# validation_data_dir = "dataset5/A"
-#
-# if K.image_data_format() == 'channels_first':
-#     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-#     x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
-#     input_shape = (1, img_rows, img_cols)
-# else:
-#     x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-#     x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
-#     input_shape = (img_rows, img_cols, 1)
-
-
-
 input_shape = (img_height, img_width, 3)
 
 model = Sequential()
@@ -69,24 +54,29 @@ model.compile(loss=keras.losses.sparse_categorical_crossentropy,
               metrics=['accuracy'])
 
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
+    #rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True)
 
-test_datagen = ImageDataGenerator(rescale=1. / 255)
+#test_datagen = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator()
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
-    class_mode='sparse')
+    class_mode='sparse',
+    color_mode='grayscale'
+)
 
 validation_generator = test_datagen.flow_from_directory(
     validation_data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
-    class_mode='sparse')
+    class_mode='sparse',
+    color_mode='grayscale'
+)
 
 model.fit_generator(
     generator = train_generator,
@@ -94,33 +84,6 @@ model.fit_generator(
     epochs=epochs,				            # For Keras 2.0 API change to epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples//batch_size)
-
-# x_train = x_train.astype('float32')
-# x_test = x_test.astype('float32')
-# x_train /= 255
-# x_test /= 255
-# print('x_train shape:', x_train.shape)
-# print(x_train.shape[0], 'train samples')
-# print(x_test.shape[0], 'test samples')
-#
-# # convert class vectors to binary class matrices
-# y_train = keras.utils.to_categorical(y_train, num_classes)
-# y_test = keras.utils.to_categorical(y_test, num_classes)
-
-
-
-# model.compile(loss=keras.losses.categorical_crossentropy,
-#               optimizer=keras.optimizers.Adadelta(),
-#               metrics=['accuracy'])
-#
-# model.fit(x_train, y_train,
-#           batch_size=batch_size,
-#           epochs=epochs,
-#           verbose=1,
-#           validation_data=(x_test, y_test))
-# score = model.evaluate(x_test, y_test, verbose=0)
-# print('Test loss:', score[0])
-# print('Test accuracy:', score[1])
 
 model.save('letter_classifier.h5')
 

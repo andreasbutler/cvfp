@@ -105,7 +105,6 @@ class InfraRedRuntime(object):
         resized = np.expand_dims(resized, axis=0)
 
         vec = model.predict(resized)
-        #TODO integrate nlp
         #Basically need to call nlp.predict(letters)
         #Calling on the previous two letters
         #Then need to call numpy.product to elementwise multiply the two vectors, after vec is of length 24
